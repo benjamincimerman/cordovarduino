@@ -1,3 +1,9 @@
+
+## bugfix
+- target : android sdk 30 or higher
+- reason : request permission 호출 시 어플리케이션이 강제종료 되는 문제 수정
+
+
 ## cordovarduino
 
 Want a module for your Arduino board that provides:
