@@ -66,6 +66,18 @@ var serial = {
             'registerReadCallback',
             []
         );
+    },
+    /**
+     * 2023-11-01 yoon: registerReadCallback 이벤트 등록 해제 기능 추가
+     */
+    unregisterReadCallback: function(successCallback, errorCallback) {
+        cordova.exec(
+            successCallback,
+            errorCallback,
+            'Serial',
+            'unregisterReadCallback',
+            []
+        );
     }
 
 };

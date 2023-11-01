@@ -1,5 +1,16 @@
+## 2023-11-01 기능 추가
+- *unregisterReadCallback* function 추가
+- 내용 : registerReadCallback 이벤트를 삭제할 수 있는 function
 
-## bugfix
+```js
+serial.unregisterReadCallback(function success(), function error());
+```
+or
+```js
+serial.unregisterReadCallback();
+```
+
+## 2023-09-12 bugfix
 - target : android sdk 30 or higher
 - reason : request permission 호출 시 어플리케이션이 강제종료 되는 문제 수정
 

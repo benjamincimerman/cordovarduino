@@ -51,6 +51,9 @@ public class Serial extends CordovaPlugin {
 	private static final String ACTION_CLOSE = "closeSerial";
 	private static final String ACTION_READ_CALLBACK = "registerReadCallback";
 
+	// 2023-11-01 yoon: registerReadCallback 이벤트 등록 해제 기능 추가
+	private static final String ACTION_UNREAD_CALLBACK = "unregisterReadCallback";
+
 	// UsbManager instance to deal with permission and opening
 	private UsbManager manager;
 	// The current driver that handle the serial port
@@ -139,6 +142,12 @@ public class Serial extends CordovaPlugin {
 			registerReadCallback(callbackContext);
 			return true;
 		}
+		/**
+		 * 2023-11-01 yoon: registerReadCallback 이벤트 등록 해제 기능 추가
+		 */
+		else if (ACTION_UNREAD_CALLBACK.equals(action)){
+			unregisterReadCallback(callbackContext);
+		}
 		// the action doesn't exist
 		return false;
 	}
@@ -196,8 +205,18 @@ public class Serial extends CordovaPlugin {
 					// get the first one as there is a high chance that there is no more than one usb device attached to your android
 					driver = availableDrivers.get(0);
 					UsbDevice device = driver.getDevice();
+
 					// create the intent that will be used to get the permission					
+					// PendingIntent pendingIntent = PendingIntent.getBroadcast(cordova.getActivity(), 0, new Intent(UsbBroadcastReceiver.USB_PERMISSION), 0);
+
+					/**
+					 * 2023-09-12 yoon: android 12에서 requestPermission 호출 시 어플리케이션이 셧다운 되는 문제 수정
+					 */
 					PendingIntent pendingIntent = PendingIntent.getBroadcast(cordova.getActivity(), 0, new Intent(UsbBroadcastReceiver.USB_PERMISSION), PendingIntent.FLAG_MUTABLE);
+					/**
+					 * 
+					 */
+
 					// and a filter on the permission we ask
 					IntentFilter filter = new IntentFilter();
 					filter.addAction(UsbBroadcastReceiver.USB_PERMISSION);
@@ -465,6 +484,26 @@ public class Serial extends CordovaPlugin {
 				// Keep the callback
 				PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, returnObj);
 				pluginResult.setKeepCallback(true);
+				callbackContext.sendPluginResult(pluginResult);
+			}
+		});
+	}
+
+	/**
+	 * 2023-11-01 yoon: registerReadCallback 이벤트 등록 해제 기능 추가
+	 */
+	private void unregisterReadCallback(final CallbackContext callbackContext) {
+		Log.d(TAG, "unregistering callback");
+		cordova.getThreadPool().execute(new Runnable() {
+			public void run() {
+				Log.d(TAG, "unregistering callback");
+				// readCallback = callbackContext;
+				readCallback = null;
+				JSONObject returnObj = new JSONObject();
+				addProperty(returnObj, "unregisterReadCallback", "true");
+				// Keep the callback
+				PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, returnObj);
+				pluginResult.setKeepCallback(false);
 				callbackContext.sendPluginResult(pluginResult);
 			}
 		});
