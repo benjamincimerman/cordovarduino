@@ -227,9 +227,16 @@ public class Serial extends CordovaPlugin {
 					manager.requestPermission(device, pendingIntent);
 				}
 				else {
+
 					// no available drivers
 					Log.d(TAG, "No device found!");
-					callbackContext.error("No device found!");
+					// callbackContext.error("No device found!");
+
+					
+					// 2023-12-20 yoon : 장치가 연결되지 않았을 경우 인자값을 전달한다.
+					callbackContext.error("NO_DEVICE_FOUND");
+					// 2023-12-20 yoon ------------- END
+
 				}
 			}
 		});
@@ -279,9 +286,7 @@ public class Serial extends CordovaPlugin {
 				}
 				else {
 					Log.d(TAG, "Cannot connect to the device!");
-					// callbackContext.error("Cannot connect to the device!");
-
-					callbackContext.error("NO_DEVICE_FOUND");
+					callbackContext.error("Cannot connect to the device!");					
 				}
 				onDeviceStateChange();
 			}
