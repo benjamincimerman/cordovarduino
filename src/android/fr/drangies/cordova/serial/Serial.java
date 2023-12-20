@@ -279,7 +279,9 @@ public class Serial extends CordovaPlugin {
 				}
 				else {
 					Log.d(TAG, "Cannot connect to the device!");
-					callbackContext.error("Cannot connect to the device!");
+					// callbackContext.error("Cannot connect to the device!");
+
+					callbackContext.error("NO_DEVICE_FOUND");
 				}
 				onDeviceStateChange();
 			}
